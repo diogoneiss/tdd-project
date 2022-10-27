@@ -1,7 +1,7 @@
 from django.urls import resolve
 from django.test import TestCase
 from django.http import HttpRequest
-from lists.models import Item
+from lists.models import Item, List
 from lists.views import home_page
 
 from django.core.exceptions import ValidationError

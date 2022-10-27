@@ -1,11 +1,22 @@
 from django.urls import resolve
 from django.test import TestCase
 from django.http import HttpRequest
-from lists.models import Item
+from lists.models import Item, List
 from lists.views import home_page
 from django.utils.html import escape
 
 class NewListTest(TestCase):
+    def test_validation_errors_end_up_on_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            f'/lists/{list_.id}/',
+            data={'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'list.html')
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
+        
     def test_invalid_list_items_arent_saved(self):
         self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
@@ -79,25 +90,24 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other list item 2')
 class HomePageTest(TestCase):
 
-    def test_home_page_returns_correct_html(self):
-        response = self.client.get('/')  
-
-        html = response.content.decode('utf8')  
-        self.assertTrue(html.startswith('<html>'))
-        self.assertIn('<title>To-Do lists</title>', html)
-        self.assertTrue(html.strip().endswith('</html>'))
-
-        self.assertTemplateUsed(response, 'home.html') 
-        
-    def test_displays_all_list_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
+    def test_uses_home_template(self):
         response = self.client.get('/')
+        self.assertTemplateUsed(response, 'home.html')
+        
+    def test_displays_only_items_for_that_list(self):
+        correct_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list=correct_list)
+        Item.objects.create(text='itemey 2', list=correct_list)
+        other_list = List.objects.create()
+        Item.objects.create(text='other list item 1', list=other_list)
+        Item.objects.create(text='other list item 2', list=other_list)
 
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'other list item 1')
+        self.assertNotContains(response, 'other list item 2')
 
     def test_saving_and_retrieving_items(self):
         my_list = List()
