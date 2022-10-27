@@ -30,10 +30,7 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
 class HomePageTest(TestCase):
-    def test_only_saves_items_when_necessary(self):
-        self.client.get('/')
-        self.assertEqual(Item.objects.count(), 0)
-        
+
     def test_home_page_returns_correct_html(self):
         response = self.client.get('/')  
 
