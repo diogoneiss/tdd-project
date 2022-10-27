@@ -1,0 +1,3 @@
+O processo de TDD consiste em escrever testes para o comportamento esperado, resolver da maneira mais simples possível e verificar se passa.
+
+Enquanto ele não estiver em um estado de qualidade aceitável, repetir o processo de refatorar e testar
