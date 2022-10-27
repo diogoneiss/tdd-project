@@ -88,7 +88,7 @@ class HomePageTest(TestCase):
 
         self.assertIn('itemey 1', response.content.decode())
         self.assertIn('itemey 2', response.content.decode())
-class ListAndItemModelsTest(TestCase):
+
 
     def test_saving_and_retrieving_items(self):
         my_list = List()
