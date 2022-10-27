@@ -4,10 +4,15 @@ from django.http import HttpRequest
 from lists.models import Item
 from lists.views import home_page
 
-
+from django.core.exceptions import ValidationError
 
 class ListAndItemModelsTest(TestCase):
-
+    def test_cannot_save_empty_list_items(self):
+        list_ = List.objects.create()
+        item = Item(list=list_, text='')
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
     def test_saving_and_retrieving_items(self):
         my_list = List()
         my_list.save()
