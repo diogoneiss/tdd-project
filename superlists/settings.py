@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'lists',
     'accounts',
 ]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,7 +124,6 @@ AUTH_USER_MODEL = 'accounts.ListUser'
 AUTHENTICATION_BACKENDS = [
     'accounts.authentication.PasswordlessAuthenticationBackend',
 ]
-
 #export EMAIL_PASSWORD="SUA_SENHA"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'exemplotestedesoftwareufmg@gmail.com'
